@@ -32,7 +32,7 @@ To check: [http://localhost:19000]
 1. [Apache Kafka](https://kafka.apache.org/)
 2. [Debezium](debezium.io/) 
 3. [PostgreSQL](https://www.postgresql.org/)
-4. [Kafdrop] (https://github.com/obsidiandynamics/kafdrop)
+4. [Kafdrop](https://github.com/obsidiandynamics/kafdrop)
 
 ## ✒️ Team
 
