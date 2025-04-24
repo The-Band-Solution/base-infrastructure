@@ -1,0 +1,127 @@
+version: '3.9'
+services:
+  zookeeper:
+    container_name: immigrant-zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    networks: 
+      - broker-kafka
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  
+  kafka:
+    container_name: immigrant-kafka
+    image: confluentinc/cp-kafka:latest
+    networks: 
+      - broker-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  db-pg:
+    container_name: immigrant-db-postgres
+    image: debezium/postgres:15-alpine
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    
+    ports:
+      - "5432:5432"
+    networks:
+      - broker-kafka
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+  
+  mongo-express:
+    image: mongo-express
+    container_name: immigrant-db-mongodb-express
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongo:27017/?authSource=admin
+    
+    links:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - broker-kafka
+    ports:
+      - "8888:8081"
+  mongo:
+    image: mongo:4.4.6
+    container_name: immigrant-db-mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - broker-kafka
+
+  connect:
+    container_name: immigrant-connect
+    image: quay.io/debezium/connect:nightly
+    ports:
+     - 8083:8083
+    depends_on:
+      - kafka
+      - db-pg
+    links:
+     - kafka
+     - db-pg
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:29092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+    networks:
+      - broker-kafka
+
+  kafdrop:
+    container_name: immigrant-kafdrop
+    image: obsidiandynamics/kafdrop:latest
+    networks: 
+      - broker-kafka
+    depends_on:
+      - kafka
+    ports:
+      - 19000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+
+  immigrant-appsmith:
+    image: index.docker.io/appsmith/appsmith-ce:v1.29
+    container_name: immigrant-appsmith
+    ports:
+      - "80:80"
+      - "443:443"
+    networks: 
+      - broker-kafka
+    depends_on:
+      - db-pg
+    links:
+      - db-pg
+    environment:
+      - APPSMITH_DB_HOST=db-pg
+      - APPSMITH_DB_PORT=5432
+      - APPSMITH_DB_NAME=appsmith_db
+      - APPSMITH_DB_USERNAME=postgres
+      - APPSMITH_DB_PASSWORD=postgres
+    volumes:
+      - ./stacks:/appsmith-stacks
+    restart: unless-stopped
+  
+volumes:
+  pgdata:
+  mongodata:
+  
+networks: 
+  broker-kafka:
+    name:  base-infrastrutrure
+    driver: bridge  
