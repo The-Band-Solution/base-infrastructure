@@ -1,47 +1,59 @@
-# Immigrant Communication and Change Data Capture Infrastructure
+# 🌍 The Band Communication and Change Data Capture Infrastructure
+
+This project sets up an infrastructure to capture real-time changes in a PostgreSQL database (e.g., **insert**, **update**, **delete**) and publish them to **Apache Kafka** topics using **Debezium**.
+
+![Debezium Architecture](debezium-architecture.png "Debezium")
+
+---
 
 ## 🚀 Goal
 
-Provides an infrastructure that allows capturing of any change in the database (e.g., insert, update, delete) and sending it to a queue, as presented in Figure.
+Enable **Change Data Capture (CDC)** for PostgreSQL, allowing systems to react to data changes instantly via a messaging queue. This supports integration, synchronization, analytics, and auditing use cases.
 
-![alt text](debezium-architecture.png "Debezium")
+---
 
 ## ⚙️ Requirements
 
-1. Docker Compose
+- [Docker Compose](https://docs.docker.com/compose/)
 
-## 🔧 Install
+---
 
-First, creates a .env file with the following contain:
+## 🔧 Installation
 
-```
+1. Create a `.env` file in the project root with the following content:
+
+```env
 DEBEZIUM_VERSION=2.0
-COMPOSE_PROJECT_NAME = immigrant-cdc-infrastruture
+COMPOSE_PROJECT_NAME=immigrant-cdc-infrastructure
 ```
-The last, in a terminal execute the following commnad to start the infrastructure
 
+> ⚠️ Note: Remove any spaces around the `=` signs in your `.env` file.
+
+2. Start the infrastructure with:
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
-To check: [http://localhost:19000]
+Once started, you can access the Kafdrop UI at:
 
-## 🛠️ Stack
+📍 [http://localhost:19000](http://localhost:19000)
 
-1. [Apache Kafka](https://kafka.apache.org/)
-2. [Debezium](debezium.io/) 
-3. [PostgreSQL](https://www.postgresql.org/)
-4. [Kafdrop](https://github.com/obsidiandynamics/kafdrop)
+---
 
-## ✒️ Team
+## 🛠️ Stack Overview
 
-[Paulo Sérgio dos Santos Júnior](paulossjunior@gmail.com)
+| Component     | Description                                         |
+|---------------|-----------------------------------------------------|
+| **PostgreSQL** | The source database being monitored for changes     |
+| **Apache Kafka** | The message broker used to propagate the changes |
+| **Debezium**   | The CDC engine that reads changes from PostgreSQL  |
+| **Kafdrop**    | A Kafka web UI for inspecting topics and messages  |
 
-## 📕 Literature
+---
 
-1. [Debezium GitHub Examples](https://github.com/debezium/debezium-examples/tree/main/tutorial)
+## 📚 References & Learning Materials
 
-2. [Introduction to Debezium](https://www.baeldung.com/debezium-intro)
-
-3. [kafka Drop](https://medium.com/azure-na-pratica/apache-kafka-kafdrop-docker-compose-montando-rapidamente-um-ambiente-para-testes-606cc76aa66)
+1. 📘 [Debezium GitHub Examples](https://github.com/debezium/debezium-examples/tree/main/tutorial)  
+2. 📖 [Introduction to Debezium – Baeldung](https://www.baeldung.com/debezium-intro)  
+3. 🛠️ [Setting Up Kafdrop with Kafka Using Docker Compose](https://medium.com/azure-na-pratica/apache-kafka-kafdrop-docker-compose-montando-rapidamente-um-ambiente-para-testes-606cc76aa66)
