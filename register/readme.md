@@ -1,9 +1,6 @@
 # Register on Debezium
 
-## 🚀 Goal
-
 Provides an example of configuration of a database using Debezium. 
-
 
 ## 🔧 Background 
 
