@@ -1,4 +1,6 @@
-# The Band Base Infrastruture
+# Immigrant Communication and Change Data Capture Infrastructure
+
+## 🚀 Goal
 
 Provides an infrastructure that allows capturing of any change in the database (e.g., insert, update, delete) and sending it to a queue, as presented in Figure.
 
@@ -31,6 +33,10 @@ To check: [http://localhost:19000]
 2. [Debezium](debezium.io/) 
 3. [PostgreSQL](https://www.postgresql.org/)
 4. [Kafdrop] (https://github.com/obsidiandynamics/kafdrop)
+
+## ✒️ Team
+
+[Paulo Sérgio dos Santos Júnior](paulossjunior@gmail.com)
 
 ## 📕 Literature
 

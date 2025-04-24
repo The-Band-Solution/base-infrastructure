@@ -1,0 +1,1 @@
+cat databasesBackup.sql | docker exec -i  immigrant-db-postgres psql -U postgres

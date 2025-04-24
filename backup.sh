@@ -1,0 +1,1 @@
+docker exec -t immigrant-db-postgres pg_dumpall -c -U postgres > databasesBackup.sql
